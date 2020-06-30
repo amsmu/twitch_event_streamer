@@ -1,8 +1,11 @@
 import React from 'react';
+import { withRouter } from 'react-router-dom';
 import { Card, Button } from 'antd';
-import './App.css';
 
-function Login() {
+function Login(props) {
+  if (localStorage.getItem('authToken')) {
+    props.history.push('/');
+  }
   return [
     <Card title='Login' className='text-center' style={{ width: 300 }}>
       <Button
@@ -19,4 +22,4 @@ function Login() {
   ];
 }
 
-export default Login;
+export default withRouter(Login);
