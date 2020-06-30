@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Button } from 'antd';
+import { Card, Button, Form, Input, notification } from 'antd';
 const axios = require('axios');
 
 function Search(props) {
@@ -13,11 +13,11 @@ function Search(props) {
     props.history.push('/login');
   }
 
-  const searchUser = () => {
+  const searchUser = (values) => {
     axios
       .get('https://api.twitch.tv/helix/users', {
         params: {
-          login: 'randomUser',
+          login: values.streamer_name,
         },
         headers: {
           'client-id': 'sciiojcxbu9tph69yktsb208j2kb7r',
@@ -26,9 +26,9 @@ function Search(props) {
       })
       .then(function (response) {
         if (response.data.data.length > 0) {
-          console.log(response);
+          props.history.push('/view/' + values.streamer_name);
         } else {
-          console.log('no such user exist');
+          notification.error({ message: 'No such user exists' });
         }
       })
       .catch(function (error) {
@@ -43,10 +43,17 @@ function Search(props) {
   };
 
   return [
-    <Card title='Search Streamer' className='text-center' style={{ width: 300 }}>
-      <Button type='primary' size='large' onClick={searchUser}>
-        Search
-      </Button>
+    <Card title='Search Streamer' style={{ maxWidth: 800, margin: '10em auto' }}>
+      <Form onFinish={searchUser} size='large'>
+        <Form.Item label='Enter Streamer name' name='streamer_name'>
+          <Input />
+        </Form.Item>
+        <Form.Item>
+          <Button type='primary' htmlType='submit' size='large'>
+            Search
+          </Button>
+        </Form.Item>
+      </Form>
     </Card>,
   ];
 }

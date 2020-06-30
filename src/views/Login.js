@@ -7,13 +7,13 @@ function Login(props) {
     props.history.push('/');
   }
   return [
-    <Card title='Login' className='text-center' style={{ width: 300 }}>
+    <Card title='Login' style={{ width: 300, margin: '10em auto' }}>
       <Button
         type='primary'
         size='large'
         onClick={() =>
           (window.location.href =
-            'https://id.twitch.tv/oauth2/authorize?client_id=sciiojcxbu9tph69yktsb208j2kb7r&redirect_uri=http://localhost:3000&response_type=token')
+            'https://id.twitch.tv/oauth2/authorize?client_id=sciiojcxbu9tph69yktsb208j2kb7r&redirect_uri=http://localhost:3000&response_type=token&scope=whispers:read+bits:read+channel:read:redemptions+channel_subscriptions')
         }
       >
         Login with Twitch
