@@ -8,8 +8,8 @@ function Search(props) {
     localStorage.setItem('authToken', newAuthToken);
   }
 
-  const AuthToken = localStorage.getItem('authToken');
-  if (!AuthToken) {
+  const authToken = localStorage.getItem('authToken');
+  if (!authToken) {
     props.history.push('/login');
   }
 
@@ -21,14 +21,14 @@ function Search(props) {
         },
         headers: {
           'client-id': 'sciiojcxbu9tph69yktsb208j2kb7r',
-          Authorization: 'Bearer ' + AuthToken,
+          Authorization: 'Bearer ' + authToken,
         },
       })
       .then(function (response) {
         if (response.data.data.length > 0) {
-          console.log(response)
+          console.log(response);
         } else {
-          console.log("no such user exist")
+          console.log('no such user exist');
         }
       })
       .catch(function (error) {
