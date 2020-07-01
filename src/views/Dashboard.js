@@ -5,7 +5,16 @@ const axios = require('axios');
 
 function Dashboard(props) {
   const username = props.match.params.username;
+  const messageTypes = {
+    sub: ' subscribed',
+    resub: ' resubscribed',
+    subgift: ' gifted subscription',
+    primepaidupgrade: ' upgraded from free Prime Subscription',
+    giftpaidupgrade: ' gifted subscription upgrade',
+    raid: ' raided this channel',
+  };
   const [user, setuser] = useState({});
+  const [events, setEvent] = useState([]);
   let refWebSocket = null;
 
   let newAuthToken = props.location.hash.split('&')[0].split('=')[1];
@@ -31,6 +40,7 @@ function Dashboard(props) {
         },
       })
       .then(function (response) {
+        console.log(response);
         if (response.data.data.length > 0) {
           setuser(response.data.data[0]);
         } else {
@@ -42,9 +52,6 @@ function Dashboard(props) {
           localStorage.setItem('authToken', null);
           props.history.push('/login');
         }
-      })
-      .finally(function () {
-        // always executed
       });
   };
 
@@ -58,19 +65,34 @@ function Dashboard(props) {
     refWebSocket.sendMessage(message);
   };
 
+  const messageKeyValueExtractor = (text, key) => {
+    let keySeparatedData = text.split(';' + key + '=');
+    return keySeparatedData[1].split(';')[0];
+  };
+
   const onMessage = (data) => {
-    console.log(data);
-    if (JSON.parse(data).type == 'PONG') {
-      sendMessage(
-        JSON.stringify({
-          type: 'LISTEN',
-          nonce: 'int-demo-123214214324324' + user.id,
-          data: {
-            topics: ['channel-subscribe-events-v1.' + user.id],
-            auth_token: authToken,
-          },
-        })
+    // Parsing chat messages
+    let privMessageData = data.split('PRIVMSG');
+    if (privMessageData.length == 2) {
+      let newEventsArray = Object.assign([], events);
+      newEventsArray.push(messageKeyValueExtractor(privMessageData[0], 'display-name') + ' sent a message');
+      if (newEventsArray.length > 10) {
+        newEventsArray.shift();
+      }
+      setEvent(newEventsArray);
+    }
+    // Parsing user notice type messages
+    let userNoticeData = data.split('USERNOTICE');
+    if (userNoticeData.length == 2) {
+      let newEventsArray = Object.assign([], events);
+      newEventsArray.push(
+        messageKeyValueExtractor(privMessageData[0], 'display-name') +
+          messageTypes[messageKeyValueExtractor(privMessageData[0], 'msg-id')]
       );
+      if (newEventsArray.length > 10) {
+        newEventsArray.shift();
+      }
+      setEvent(newEventsArray);
     }
   };
 
@@ -89,15 +111,20 @@ function Dashboard(props) {
       height='500'
       width='350'
     ></iframe>,
+    <div>
+      <h2>10 Recent events</h2>
+      {events.map((event, index) => (
+        <h3>{event}</h3>
+      ))}
+    </div>,
     <Websocket
-      url='wss://pubsub-edge.twitch.tv'
-      onOpen={() =>
-        sendMessage(
-          JSON.stringify({
-            type: 'PING',
-          })
-        )
-      }
+      url='wss://irc-ws.chat.twitch.tv:443'
+      onOpen={() => {
+        sendMessage('CAP REQ :twitch.tv/tags twitch.tv/commands twitch.tv/membership');
+        sendMessage('PASS oauth:' + authToken);
+        sendMessage('NICK myusername');
+        sendMessage('JOIN #' + username);
+      }}
       onMessage={onMessage}
       ref={(Websocket) => {
         refWebSocket = Websocket;

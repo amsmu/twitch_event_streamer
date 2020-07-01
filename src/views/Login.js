@@ -13,7 +13,7 @@ function Login(props) {
         size='large'
         onClick={() =>
           (window.location.href =
-            'https://id.twitch.tv/oauth2/authorize?client_id=sciiojcxbu9tph69yktsb208j2kb7r&redirect_uri=http://localhost:3000&response_type=token&scope=whispers:read+bits:read+channel:read:redemptions+channel_subscriptions')
+            'https://id.twitch.tv/oauth2/authorize?client_id=sciiojcxbu9tph69yktsb208j2kb7r&redirect_uri=http://localhost:3000&response_type=token&scope=chat:read')
         }
       >
         Login with Twitch
