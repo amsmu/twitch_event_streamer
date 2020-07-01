@@ -13,7 +13,7 @@ function Login(props) {
         size='large'
         onClick={() =>
           (window.location.href =
-            'https://id.twitch.tv/oauth2/authorize?client_id=sciiojcxbu9tph69yktsb208j2kb7r&redirect_uri=https://twitch-event-streamer.herokuapp.com/&response_type=token&scope=chat:read')
+            'https://id.twitch.tv/oauth2/authorize?client_id=sciiojcxbu9tph69yktsb208j2kb7r&redirect_uri=https://twitch-event-streamer.herokuapp.com&response_type=token&scope=chat:read')
         }
       >
         Login with Twitch
