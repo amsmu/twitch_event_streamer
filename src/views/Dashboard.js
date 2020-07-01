@@ -98,7 +98,7 @@ function Dashboard(props) {
 
   return [
     <iframe
-      src={'https://player.twitch.tv/?channel=' + username + '&parent=localhost'}
+      src={'https://player.twitch.tv/?channel=' + username + '&parent=twitch-event-streamer.herokuapp.com'}
       frameborder='0'
       allowfullscreen='true'
       scrolling='no'
@@ -107,7 +107,7 @@ function Dashboard(props) {
     ></iframe>,
     <iframe
       id='chat_embed'
-      src={'https://www.twitch.tv/embed/' + username + '/chat?parent=localhost'}
+      src={'https://www.twitch.tv/embed/' + username + '/chat?parent=twitch-event-streamer.herokuapp.com'}
       height='500'
       width='350'
     ></iframe>,
